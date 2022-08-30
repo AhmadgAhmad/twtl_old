@@ -1,0 +1,6 @@
+
+1 - Problem in reading the propositions: 
+
+The following TWTL formula's propositions are shown as what follows. 
+phi = '[H^2 A]^[0, 6] * [H^1 D]^[0, 6] * ([H^1 B]^[0, 3] | [H^1 C]^[1, 4])'
+self.props = {' ': 512, '(': 1, ')': 1024, '2': 64, 'A': 256, 'H': 2, 'd': 16, 'l': 8, 'o': 4} 
