@@ -381,8 +381,8 @@ def hold(props, prop, duration, negation=False):
     assert prop in props
 
     guard = prop if not negation else '!' + prop
-    name = '(Hold {} {}{} )'.format(duration, 'not ' if negation else '', prop)
-    dfa = Fsa(name, props, multi=False)
+    dfa = Fsa(props, multi=False)
+    dfa.name = '(Hold {} {}{} )'.format(duration, 'not ' if negation else '', prop)
     bitmaps = dfa.get_guard_bitmap(guard)
 
     ngen = it.count()
