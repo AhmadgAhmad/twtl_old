@@ -317,7 +317,8 @@ def relabel_dfa(dfa, mapping='default', start=0, copy=False):
     mapping.update(dict(zip(nodes, it.count(start))))
 
     if copy: # create new dfa
-        ret = Fsa(dfa.name, dfa.props, dfa.multi)
+        ret = Fsa(props = dfa.props, multi= dfa.multi)
+        ret.name = dfa.name
     else: # in-place relabeling
         ret = dfa
     # relabel state, inital state and set of final states
@@ -359,7 +360,7 @@ def accept_prop(props, prop=None, boolean=None):
     else:
         raise AssertionError('Either prop or boolean must be given!')
 
-    dfa = Fsa(name, props, multi=False)
+    dfa = Fsa(props = props, multi=False)
     dfa.name = name
     bitmaps = dfa.get_guard_bitmap(guard)
     ngen = it.count()
@@ -381,7 +382,7 @@ def hold(props, prop, duration, negation=False):
     assert prop in props
 
     guard = prop if not negation else '!' + prop
-    dfa = Fsa(props, multi=False)
+    dfa = Fsa(props = props, multi=False)
     dfa.name = '(Hold {} {}{} )'.format(duration, 'not ' if negation else '', prop)
     bitmaps = dfa.get_guard_bitmap(guard)
 
@@ -424,9 +425,8 @@ def concatenation(dfa1, dfa2):
     assert len(dfa1.init) == 1 and len(dfa2.init) == 1
     assert len(dfa1.final) == 1 and len(dfa2.final) == 1
 
-    name = '(Concat {} {} )'.format(dfa1.name, dfa2.name)
-    dfa = Fsa(name, dfa1.props, dfa1.multi)
-
+    dfa = Fsa(props = dfa1.props, multi = dfa1.multi)
+    dfa.name = '(Concat {} {} )'.format(dfa1.name, dfa2.name)
     # relabel the two DFAs to avoid state name collisions and merge the final
     # state of dfa1 with the initial state of dfa2
     relabel_dfa(dfa1, start=0)
@@ -466,8 +466,8 @@ def intersection(dfa1, dfa2):
     assert len(dfa1.init) == 1 and len(dfa2.init) == 1
     assert len(dfa1.final) == 1 and len(dfa2.final) == 1
 
-    name = '(Intersection {} {} )'.format(dfa1.name, dfa2.name)
-    dfa = Fsa(name, dfa1.props, dfa1.multi)
+    dfa = Fsa(props = dfa1.props, multi = dfa1.multi)
+    dfa.name = '(Intersection {} {} )'.format(dfa1.name, dfa2.name)
 
     init = list(it.product(dfa1.init.keys(), dfa2.init.keys()))
     dfa.init = dict(zip(init, (1,)*len(init)))
@@ -536,9 +536,8 @@ def union(dfa1, dfa2):
     assert len(dfa1.init) == 1 and len(dfa2.init) == 1
     assert len(dfa1.final) == 1 and len(dfa2.final) == 1
 
-    name = '(Union {} {} )'.format(dfa1.name, dfa2.name)
-    dfa = Fsa(name, dfa1.props, dfa1.multi)
-
+    dfa = Fsa( props = dfa1.props, multi = dfa1.multi)
+    dfa.name = '(Union {} {} )'.format(dfa1.name, dfa2.name)
     # add self-loops on final states and trap states
     attr_dict={'weight': 0, 'input': dfa.alphabet, 'guard' : '(1)',
                'label': '(1)'}
@@ -680,8 +679,8 @@ def repeat(phi_dfa, low, high):
     # remove trap states if there are any
     phi_dfa.remove_trap_states()
     # initialize the resulting dfa
-    name = '(Repeat {} {} {} )'.format(phi_dfa.name, low, high)
-    dfa = Fsa(name, phi_dfa.props, phi_dfa.multi)
+    dfa = Fsa(props=phi_dfa.props, multi= phi_dfa.multi)
+    dfa.name = '(Repeat {} {} {} )'.format(phi_dfa.name, low, high)
     # compute the maximum number of restarts
     b = nx.shortest_path_length(phi_dfa.g, source=init_state,
                                 target=final_state)
