@@ -47,7 +47,7 @@ def case1_synthesis(formula, ts_file):
     for u, v, d in dfa_inf.g.edges_iter(data=True):
         logging.debug('({}, {}): {}'.format(u, v, d))
 
-    dfa_inf.visualize(draw='matplotlib')
+    dfa_inf.visualize(draw='matplotlib') 
     plt.show()
 
     logging.debug('\nEnd of translate\n\n')
@@ -60,7 +60,7 @@ def case1_synthesis(formula, ts_file):
 
     logging.debug('\n\nStart policy computation\n')
 
-    ts = Ts.load(ts_file)
+    ts = Ts.read_from_file(ts_file)
     ets = expand_duration_ts(ts)
 
     for name, dfa in [('normal', dfa_0), ('infinity', dfa_inf)]:
